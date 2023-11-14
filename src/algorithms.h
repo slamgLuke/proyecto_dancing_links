@@ -35,25 +35,13 @@ vector<Matrix> dancing_links(Matrix& m) {
 }
 
 
-bool compare(Matrix& a, Matrix& b) {
-    if (a.size() != b.size()) {
-        return false;
-    }
-
-    // todo!()
-
-    return true;
-}
-
 bool compare(vector<Matrix>& a, vector<Matrix>& b) {
     if (a.size() != b.size()) {
-        return false;
+        return false; // different number of solutions
     }
 
     for (int i = 0; i < a.size(); ++i) {
-        if (!compare(a[i], b[i])) {
-            return false;
-        }
+        // todo!()
     }
 
     return true;
