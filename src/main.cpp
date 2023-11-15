@@ -2,10 +2,17 @@
 
 using namespace std;
 
-int main() {
-    auto& m = SudokuVisual::getInstance();
+Vec2d getMouseCoords(sf::RenderWindow& window) {
+    auto mousePos = sf::Mouse::getPosition(window);
+    auto translatedPos = window.mapPixelToCoords(mousePos);
+    Vec2d output = Vec2d(translatedPos.x / TILE_SIZE, translatedPos.y / TILE_SIZE);
+    return output;
+}
 
-    auto window = sf::RenderWindow{{1920u, 1080u}, "CMake SFML Project"};
+int main() {
+    auto& sudoku = SudokuVisual::getInstance();
+
+    auto window = sf::RenderWindow{{TILE_SIZE * 9, TILE_SIZE * 12}, "Sudoku DLx Solver"};
     window.setFramerateLimit(144);
 
     while (window.isOpen()) {
@@ -13,9 +20,17 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    Vec2d mousePos = getMouseCoords(window);
+                    sudoku.setTile(mousePos.x, mousePos.y, 1);
+                }
+            }
         }
 
+
         window.clear();
+        sudoku.draw(window);
         window.display();
     }
 }

@@ -16,7 +16,7 @@ class SudokuVisual {
         for (int x = 0; x < size; x++) {
             matrix[x] = new Tile[size];
             for (int y = 0; y < size; y++) {
-                matrix[x][y] = Tile();
+                matrix[x][y] = Tile(x, y);
             }
         }
     }
@@ -29,7 +29,7 @@ class SudokuVisual {
         return instance;
     }
 
-    void setTile(int x, int y, string val) { matrix[x][y].value = val; }
+    void setTile(int x, int y, int val) { matrix[x][y].setValue(val); }
     Tile& getTile(int x, int y) { return matrix[x][y]; }
 
     void draw(sf::RenderWindow& window) {
