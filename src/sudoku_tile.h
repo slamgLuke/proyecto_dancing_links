@@ -1,4 +1,5 @@
 #define TILE_SIZE 64
+#define DEFAULT " "
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -53,9 +54,9 @@ struct Tile {
             }
         }
         text.setFont(font);
-        text.setString(" ");
+        text.setString(DEFAULT);
         text.setCharacterSize(50);
-        text.setColor(sf::Color::Black);
+        text.setFillColor(sf::Color::Black);
         text.setPosition(pos.x * TILE_SIZE + 15, pos.y * TILE_SIZE + 5);
 
         if (!isTextureLoaded) {
@@ -72,7 +73,7 @@ struct Tile {
     void setValue(int val) {
         value = val;
         if (val == 0) {
-            text.setString(" ");
+            text.setString(DEFAULT);
         } else {
             text.setString(to_string(val));
         }

@@ -30,7 +30,14 @@ class SudokuVisual {
     }
 
     void setTile(int x, int y, int val) { matrix[x][y].setValue(val); }
-    Tile& getTile(int x, int y) { return matrix[x][y]; }
+    Tile& getTile(Vec2d pos) { return matrix[pos.x][pos.y]; }
+
+    void clear() {
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++)
+                matrix[x][y].setValue(0);
+        }
+    }
 
     void draw(sf::RenderWindow& window) {
         for (int x = 0; x < size; x++) {
