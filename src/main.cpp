@@ -6,7 +6,7 @@ using namespace std;
 Vec2d getMouseCoords(sf::RenderWindow& window) {
     auto mousePos = sf::Mouse::getPosition(window);
     auto translatedPos = window.mapPixelToCoords(mousePos);
-    Vec2d output = Vec2d(translatedPos.x / TILE_SIZE, translatedPos.y / TILE_SIZE);
+    Vec2d output = Vec2d(translatedPos.x, translatedPos.y).index();
     return output;
 }
 
@@ -14,7 +14,10 @@ int main() {
     optional<Vec2d> awaitingTile = nullopt;
     SudokuVisual& sudoku = SudokuVisual::getInstance();
 
-    auto window = sf::RenderWindow{{TILE_SIZE * 9, TILE_SIZE * 12}, "Sudoku DLx Solver"};
+    unsigned int window_width = TILE_SIZE * 9 + LINE_THICKNESS * 2;
+    unsigned int window_height = TILE_SIZE * 12 + LINE_THICKNESS * 2;
+
+    auto window = sf::RenderWindow{{window_width, window_height}, "Sudoku DLx Solver"};
     window.setFramerateLimit(144);
 
     while (window.isOpen()) {

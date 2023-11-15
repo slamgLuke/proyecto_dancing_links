@@ -1,4 +1,5 @@
 #define TILE_SIZE 64
+#define LINE_THICKNESS 8
 #define DEFAULT " "
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -11,6 +12,23 @@ struct Vec2d {
 
     Vec2d() : x(0), y(0) {}
     Vec2d(int x, int y) : x(x), y(y) {}
+
+    Vec2d sprite_pos() { // convert index to sprite position
+        int x_offset = x / 3 * LINE_THICKNESS;
+        int y_offset = y / 3 * LINE_THICKNESS;
+
+        return Vec2d(x * TILE_SIZE + x_offset, y * TILE_SIZE + y_offset);
+    }
+
+    Vec2d index() { // convert sprite position to index
+        int x_offset = (x / (3 * TILE_SIZE)) * LINE_THICKNESS;
+        int y_offset = (y / (3 * TILE_SIZE)) * LINE_THICKNESS;
+
+        int x_index = (x - x_offset) / TILE_SIZE;
+        int y_index = (y - y_offset) / TILE_SIZE;
+
+        return Vec2d(x_index, y_index);
+    }
 };
 
 struct Tile {
@@ -46,6 +64,8 @@ struct Tile {
         text = sf::Text();
         sprite = sf::Sprite();
 
+        Vec2d sprite_pos = pos.sprite_pos();
+
         if (!isFontLoaded) {
             if (!font.loadFromFile("assets/Boxy-Bold.ttf")) {
                 throw std::runtime_error("Error loading font");
@@ -57,7 +77,7 @@ struct Tile {
         text.setString(DEFAULT);
         text.setCharacterSize(50);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(pos.x * TILE_SIZE + 15, pos.y * TILE_SIZE + 5);
+        text.setPosition(sprite_pos.x + 15, sprite_pos.y + 5);
 
         if (!isTextureLoaded) {
             if (!texture.loadFromFile("assets/Sudoku-Tile.png")) {
@@ -67,7 +87,7 @@ struct Tile {
             }
         }
         sprite.setTexture(texture);
-        sprite.setPosition(pos.x * TILE_SIZE, pos.y * TILE_SIZE);
+        sprite.setPosition(sprite_pos.x, sprite_pos.y);
     }
 
     void setValue(int val) {
