@@ -13,10 +13,10 @@ struct DancingNode {
 
 struct ColumnNode : public DancingNode {
     int size;
-    string name;
+    int index;
 
-    ColumnNode(string n) : DancingNode() {
+    ColumnNode(int n) : DancingNode() {
         size = 0;
-        name = n;
+        index = n;
     }
 };
