@@ -22,7 +22,6 @@ void DancingLinks::cover(ColumnNode* col) {
     col->right->left = col->left;
 
     if (col->size > 0) {
-        //
         for (DancingNode* dn = col->down; dn != col; dn = dn->down) {
             for (DancingNode* dnr = dn->right; dnr != dn; dnr = dnr->right) {
                 dnr->down->up = dnr->up;
@@ -38,7 +37,6 @@ void DancingLinks::uncover(ColumnNode* col) {
     col->right->left = col;
 
     if (col->size > 0) {
-        //
         for (DancingNode* dn = col->up; dn != col; dn = dn->up) {
             for (DancingNode* dnl = dn->left; dnl != dn; dnl = dnl->left) {
                 dnl->down->up = dnl;
