@@ -1,5 +1,7 @@
 #include "sudoku_visual.h"
+#include "algorithms.h"
 #include <optional>
+#include <thread>
 
 using namespace std;
 
@@ -10,13 +12,32 @@ Vec2d getMouseCoords(sf::RenderWindow& window) {
     return output;
 }
 
+void solve(bool compare) {
+    SudokuVisual& sudoku = SudokuVisual::getInstance();
+    int** matrix = sudoku.export_matrix();
+
+    auto dlx = dlx_solve(matrix);
+    auto brute = brute_force_solve(matrix);
+    if (compare) { 
+        compare_result(dlx, brute);
+    }
+
+    for (int i = 0; i < SUDOKU_SIZE; i++) {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
 int main() {
     optional<Vec2d> awaitingTile = nullopt;
     SudokuVisual& sudoku = SudokuVisual::getInstance();
 
+    thread solving_thread;
+    bool compare = false;
+    bool is_solving = false;
+
     unsigned int window_width = TILE_SIZE * 9 + LINE_THICKNESS * 2;
     unsigned int window_height = TILE_SIZE * 12 + LINE_THICKNESS * 2;
-
     auto window = sf::RenderWindow{{window_width, window_height}, "Sudoku DLx Solver"};
     window.setFramerateLimit(144);
 
@@ -57,10 +78,17 @@ int main() {
                     window.close();
                 }
                 if (event.key.code == sf::Keyboard::Space) {
-                    // sudoku.solve();
+                    is_solving = true;
+                    // solve in a new thread
+                    if (!solving_thread.joinable()) {
+                        solving_thread = thread(solve, compare);
+                    }
                 }
                 if (event.key.code == sf::Keyboard::BackSpace) {
                     sudoku.clear();
+                }
+                if (event.key.code == sf::Keyboard::C) {
+                    compare = !compare;
                 }
             }
         }
@@ -69,4 +97,10 @@ int main() {
         sudoku.draw(window);
         window.display();
     }
+
+    if (solving_thread.joinable()) {
+        solving_thread.join();
+    }
+
+    return 0;
 }

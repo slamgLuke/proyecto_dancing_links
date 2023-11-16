@@ -10,7 +10,7 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(exec src/main.cpp)
+add_executable(exec src/main.cpp src/dancing_links.cpp src/algorithms.cpp)
 target_link_libraries(exec PRIVATE sfml-graphics)
 target_compile_features(exec PRIVATE cxx_std_17)
 

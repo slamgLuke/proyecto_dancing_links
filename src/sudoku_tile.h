@@ -1,6 +1,8 @@
 #define TILE_SIZE 64
 #define LINE_THICKNESS 8
 #define DEFAULT " "
+#define SUDOKU_SIZE 9
+#define LINE_POS 3
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -12,17 +14,23 @@ struct Vec2d {
 
     Vec2d() : x(0), y(0) {}
     Vec2d(int x, int y) : x(x), y(y) {}
+    Vec2d(const Vec2d& v) : x(v.x), y(v.y) {}
+    Vec2d& operator=(const Vec2d& v) {
+        x = v.x;
+        y = v.y;
+        return *this;
+    }
 
     Vec2d sprite_pos() { // convert index to sprite position
-        int x_offset = x / 3 * LINE_THICKNESS;
-        int y_offset = y / 3 * LINE_THICKNESS;
+        int x_offset = x / LINE_POS * LINE_THICKNESS;
+        int y_offset = y / LINE_POS * LINE_THICKNESS;
 
         return Vec2d(x * TILE_SIZE + x_offset, y * TILE_SIZE + y_offset);
     }
 
     Vec2d index() { // convert sprite position to index
-        int x_offset = (x / (3 * TILE_SIZE)) * LINE_THICKNESS;
-        int y_offset = (y / (3 * TILE_SIZE)) * LINE_THICKNESS;
+        int x_offset = (x / (LINE_POS * TILE_SIZE)) * LINE_THICKNESS;
+        int y_offset = (y / (LINE_POS * TILE_SIZE)) * LINE_THICKNESS;
 
         int x_index = (x - x_offset) / TILE_SIZE;
         int y_index = (y - y_offset) / TILE_SIZE;
@@ -77,7 +85,7 @@ struct Tile {
         text.setString(DEFAULT);
         text.setCharacterSize(50);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(sprite_pos.x + 15, sprite_pos.y + 5);
+        text.setPosition(sprite_pos.x + TILE_SIZE/4, sprite_pos.y + TILE_SIZE/10);
 
         if (!isTextureLoaded) {
             if (!texture.loadFromFile("assets/Sudoku-Tile.png")) {

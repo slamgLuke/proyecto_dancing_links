@@ -8,14 +8,13 @@ using namespace std;
 class SudokuVisual {
    private:
     static SudokuVisual instance;
-    int size;
     Tile** matrix;
 
-    SudokuVisual(int _size) : size(_size) {
-        matrix = new Tile*[size];
-        for (int x = 0; x < size; x++) {
-            matrix[x] = new Tile[size];
-            for (int y = 0; y < size; y++) {
+    SudokuVisual() {
+        matrix = new Tile*[SUDOKU_SIZE];
+        for (int x = 0; x < SUDOKU_SIZE; x++) {
+            matrix[x] = new Tile[SUDOKU_SIZE];
+            for (int y = 0; y < SUDOKU_SIZE; y++) {
                 matrix[x][y] = Tile(x, y);
             }
         }
@@ -25,7 +24,7 @@ class SudokuVisual {
 
    public:
     static SudokuVisual& getInstance() {
-        static SudokuVisual instance(9);  // Inicializado solo una vez
+        static SudokuVisual instance;  // Inicializado solo una vez
         return instance;
     }
 
@@ -33,17 +32,29 @@ class SudokuVisual {
     Tile& getTile(Vec2d pos) { return matrix[pos.x][pos.y]; }
 
     void clear() {
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++)
+        for (int x = 0; x < SUDOKU_SIZE; x++) {
+            for (int y = 0; y < SUDOKU_SIZE; y++) {
                 matrix[x][y].setValue(0);
+            }
         }
     }
 
     void draw(sf::RenderWindow& window) {
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++) {
+        for (int x = 0; x < SUDOKU_SIZE; x++) {
+            for (int y = 0; y < SUDOKU_SIZE; y++) {
                 matrix[x][y].draw(window);
             }
         }
+    }
+
+    int** export_matrix() {
+        int** output = new int*[SUDOKU_SIZE];
+        for (int x = 0; x < SUDOKU_SIZE; x++) {
+            output[x] = new int[SUDOKU_SIZE];
+            for (int y = 0; y < SUDOKU_SIZE; y++) {
+                output[x][y] = matrix[x][y].value;
+            }
+        }
+        return output;
     }
 };
