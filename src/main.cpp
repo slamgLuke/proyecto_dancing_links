@@ -53,7 +53,7 @@ int main() {
             if (event.type == sf::Event::MouseButtonPressed && !is_solving) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     Vec2d mousePos = getMouseCoords(window);
-                    if (mousePos.x < 9 && mousePos.y < 9) {
+                    if (mousePos.x >= 0 && mousePos.x < 9 && mousePos.y >= 0 && mousePos.y < 9) {
                         if (awaitingTile) {
                             sudoku.getTile(awaitingTile.value()).text.setFillColor(sf::Color::Black);
                         }
