@@ -9,6 +9,10 @@ struct HUD {
     sf::RectangleShape* bg;
     sf::Text placeholder;
     sf::Text algorithm;
+    sf::Text timer;
+    sf::Clock clock;
+    bool is_solving = false;
+
     int selector = 1;
     static sf::Font font;
 
@@ -48,6 +52,25 @@ struct HUD {
         algorithm.setCharacterSize(24);
         algorithm.setFillColor(sf::Color::Black);
         algorithm.setPosition(HUD_WIDTH - 96, HUD_POS + 96);
+
+        timer = sf::Text();
+        timer.setFont(font);
+        timer.setString("");
+        timer.setCharacterSize(24);
+        timer.setFillColor(sf::Color::Black);
+        timer.setPosition(30, HUD_POS + 96);
+
+        sf::Clock clock;
+    }
+
+    void start_timer() {
+        clock.restart();
+        is_solving = true;
+    }
+
+    void stop_timer() {
+        is_solving = false;
+        timer.setString(to_string(clock.getElapsedTime().asSeconds()) + " s");
     }
 
     void change_algorithm(int _selector) {
@@ -78,6 +101,11 @@ struct HUD {
         }
         window.draw(placeholder);
         window.draw(algorithm);
+
+        if (is_solving) {
+            timer.setString(to_string(clock.getElapsedTime().asSeconds()) + " s");
+        }
+        window.draw(timer);
     }
 };
 

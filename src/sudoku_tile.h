@@ -40,6 +40,7 @@ struct Tile {
     Vec2d pos;
     sf::Text text;
     sf::Sprite sprite;
+    bool is_solution = false;
 
     static sf::Font font;
     static bool isFontLoaded;

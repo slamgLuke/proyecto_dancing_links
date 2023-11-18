@@ -47,6 +47,8 @@ class SudokuVisual {
     void change_algorithm(int selector) { hud.change_algorithm(selector); }
     int get_algorithm() { return hud.selector; }
     void change_string(string str) { hud.placeholder.setString(str); }
+    void start_timer() { hud.start_timer(); }
+    void stop_timer() { hud.stop_timer(); }
 
     void draw(sf::RenderWindow& window) {
         for (int x = 0; x < SUDOKU_SIZE; x++) {

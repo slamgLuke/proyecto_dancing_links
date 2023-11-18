@@ -12,21 +12,23 @@ Vec2d getMouseCoords(sf::RenderWindow& window) {
     return output;
 }
 
-void solve() {
+void solve(bool* is_solving) {
     SudokuVisual& sudoku = SudokuVisual::getInstance();
     int** matrix = sudoku.export_matrix();
-
+    sudoku.start_timer();
     if (sudoku.get_algorithm() == 1) {
         auto dlx = dlx_solve(matrix);
     } else {
         auto brute = brute_force_solve(matrix);
     }
+    sudoku.stop_timer();
 
     for (int i = 0; i < SUDOKU_SIZE; i++) {
         delete[] matrix[i];
     }
     delete[] matrix;
     cout << "DONE!" << endl;
+    *is_solving = false;
 }
 
 int main() {
@@ -46,7 +48,7 @@ int main() {
             }
 
             // mouse handling
-            if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.type == sf::Event::MouseButtonPressed && !is_solving) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     Vec2d mousePos = getMouseCoords(window);
                     if (mousePos.x < 9 && mousePos.y < 9) {
@@ -80,7 +82,7 @@ int main() {
                     sudoku.change_string(EXECUTING);
                     // solve in a new thread
                     if (!solving_thread.joinable()) {
-                        solving_thread = thread(solve);
+                        solving_thread = thread(solve, &is_solving);
                     }
                 }
                 if (event.key.code == sf::Keyboard::BackSpace) {
@@ -95,22 +97,17 @@ int main() {
                 }
             }
         }
-
-        if (is_solving && solving_thread.joinable()) {
-            // Thread is done solving
-            is_solving = false;
-            sudoku.change_string(PLACEHOLDER);
+        if (!is_solving && solving_thread.joinable()) {
             solving_thread.join();
-        }                    
+            sudoku.change_string(PLACEHOLDER);
+        }
 
         window.clear();
         sudoku.draw(window);
         window.display();
     }
 
-    if (solving_thread.joinable()) {
-        solving_thread.join();
-    }
+
 
     return 0;
 }
