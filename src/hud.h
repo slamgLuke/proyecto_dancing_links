@@ -69,8 +69,8 @@ struct HUD {
     }
 
     void stop_timer() {
-        is_solving = false;
         timer.setString(to_string(clock.getElapsedTime().asSeconds()) + " s");
+        is_solving = false;
     }
 
     void change_algorithm(int _selector) {

@@ -32,6 +32,8 @@ void solve(bool* is_solving) {
 }
 
 int main() {
+    cout << "Hello!" << endl;
+
     optional<Vec2d> awaitingTile = nullopt;
     SudokuVisual& sudoku = SudokuVisual::getInstance();
 
@@ -76,24 +78,24 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
-                }
-                if (event.key.code == sf::Keyboard::Space) {
-                    is_solving = true;
-                    sudoku.change_string(EXECUTING);
-                    // solve in a new thread
-                    if (!solving_thread.joinable()) {
-                        solving_thread = thread(solve, &is_solving);
+                } else if (!is_solving) {
+                    if (event.key.code == sf::Keyboard::Space) {
+                        is_solving = true;
+                        sudoku.change_string(EXECUTING);
+                        // solve in a new thread
+                        if (!solving_thread.joinable()) {
+                            solving_thread = thread(solve, &is_solving);
+                        }
                     }
-                }
-                if (event.key.code == sf::Keyboard::BackSpace) {
-                    sudoku.clear();
-                }
-
-                if (event.key.code == sf::Keyboard::D) {
-                    sudoku.change_algorithm(1);
-                }
-                if (event.key.code == sf::Keyboard::B) {
-                    sudoku.change_algorithm(2);
+                    if (event.key.code == sf::Keyboard::BackSpace) {
+                        sudoku.clear();
+                    }
+                    if (event.key.code == sf::Keyboard::D) {
+                        sudoku.change_algorithm(1);
+                    }
+                    if (event.key.code == sf::Keyboard::B) {
+                        sudoku.change_algorithm(2);
+                    }
                 }
             }
         }
@@ -107,7 +109,11 @@ int main() {
         window.display();
     }
 
+    if (solving_thread.joinable()) {
+        solving_thread.join();
+    }
 
+    cout << "Bye!" << endl;
 
     return 0;
 }
