@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sudoku_tile.h"
+#include "HUD.h"
 
 using namespace std;
 
@@ -9,8 +9,12 @@ class SudokuVisual {
    private:
     static SudokuVisual instance;
     Tile** matrix;
+    HUD hud;
 
     SudokuVisual() {
+        int sudoku_size = TILE_SIZE * 9 + LINE_THICKNESS * 2;
+        int hud_height = (TILE_SIZE * 12 + LINE_THICKNESS * 2) - sudoku_size;
+
         matrix = new Tile*[SUDOKU_SIZE];
         for (int x = 0; x < SUDOKU_SIZE; x++) {
             matrix[x] = new Tile[SUDOKU_SIZE];
@@ -18,6 +22,7 @@ class SudokuVisual {
                 matrix[x][y] = Tile(x, y);
             }
         }
+        hud = HUD();
     }
     SudokuVisual(const SudokuVisual&) = delete;
     SudokuVisual& operator=(const SudokuVisual&) = delete;
@@ -39,12 +44,17 @@ class SudokuVisual {
         }
     }
 
+    void change_algorithm(int selector) { hud.change_algorithm(selector); }
+    int get_algorithm() { return hud.selector; }
+    void change_string(string str) { hud.placeholder.setString(str); }
+
     void draw(sf::RenderWindow& window) {
         for (int x = 0; x < SUDOKU_SIZE; x++) {
             for (int y = 0; y < SUDOKU_SIZE; y++) {
                 matrix[x][y].draw(window);
             }
         }
+        hud.draw(window);
     }
 
     int** export_matrix() {

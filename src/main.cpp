@@ -12,20 +12,21 @@ Vec2d getMouseCoords(sf::RenderWindow& window) {
     return output;
 }
 
-void solve(bool compare) {
+void solve() {
     SudokuVisual& sudoku = SudokuVisual::getInstance();
     int** matrix = sudoku.export_matrix();
 
-    auto dlx = dlx_solve(matrix);
-    auto brute = brute_force_solve(matrix);
-    if (compare) { 
-        compare_result(dlx, brute);
+    if (sudoku.get_algorithm() == 1) {
+        auto dlx = dlx_solve(matrix);
+    } else {
+        auto brute = brute_force_solve(matrix);
     }
 
     for (int i = 0; i < SUDOKU_SIZE; i++) {
         delete[] matrix[i];
     }
     delete[] matrix;
+    cout << "DONE!" << endl;
 }
 
 int main() {
@@ -33,12 +34,9 @@ int main() {
     SudokuVisual& sudoku = SudokuVisual::getInstance();
 
     thread solving_thread;
-    bool compare = false;
     bool is_solving = false;
 
-    unsigned int window_width = TILE_SIZE * 9 + LINE_THICKNESS * 2;
-    unsigned int window_height = TILE_SIZE * 12 + LINE_THICKNESS * 2;
-    auto window = sf::RenderWindow{{window_width, window_height}, "Sudoku DLx Solver"};
+    auto window = sf::RenderWindow{{WINDOW_WIDTH, WINDOW_HEIGHT}, "Sudoku DLx Solver"};
     window.setFramerateLimit(144);
 
     while (window.isOpen()) {
@@ -79,19 +77,31 @@ int main() {
                 }
                 if (event.key.code == sf::Keyboard::Space) {
                     is_solving = true;
+                    sudoku.change_string(EXECUTING);
                     // solve in a new thread
                     if (!solving_thread.joinable()) {
-                        solving_thread = thread(solve, compare);
+                        solving_thread = thread(solve);
                     }
                 }
                 if (event.key.code == sf::Keyboard::BackSpace) {
                     sudoku.clear();
                 }
-                if (event.key.code == sf::Keyboard::C) {
-                    compare = !compare;
+
+                if (event.key.code == sf::Keyboard::D) {
+                    sudoku.change_algorithm(1);
+                }
+                if (event.key.code == sf::Keyboard::B) {
+                    sudoku.change_algorithm(2);
                 }
             }
         }
+
+        if (is_solving && solving_thread.joinable()) {
+            // Thread is done solving
+            is_solving = false;
+            sudoku.change_string(PLACEHOLDER);
+            solving_thread.join();
+        }                    
 
         window.clear();
         sudoku.draw(window);

@@ -1,8 +1,4 @@
-#define TILE_SIZE 64
-#define LINE_THICKNESS 8
-#define DEFAULT " "
-#define SUDOKU_SIZE 9
-#define LINE_POS 3
+#include "definitions.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -85,7 +81,7 @@ struct Tile {
         text.setString(DEFAULT);
         text.setCharacterSize(50);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(sprite_pos.x + TILE_SIZE/4, sprite_pos.y + TILE_SIZE/10);
+        text.setPosition(sprite_pos.x + TILE_SIZE/6, sprite_pos.y + TILE_SIZE/30);
 
         if (!isTextureLoaded) {
             if (!texture.loadFromFile("assets/Sudoku-Tile.png")) {
