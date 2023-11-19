@@ -57,6 +57,14 @@ void DancingLinks::uncover(DancingNode *col) {
 }
 
 void DancingLinks::coverExisted(int **&m) {
+  matrix = new int *[9];
+  for (int i = 0; i < 9; ++i) {
+    matrix[i] = new int[9];
+    for (int j = 0; j < 9; ++j) {
+      matrix[i][j] = m[i][j];
+    }
+  }
+
   int ns = 81;
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
@@ -75,7 +83,7 @@ void DancingLinks::coverExisted(int **&m) {
       }
     }
   }
-  solution.resize(ns);
+  /* solution.resize(ns); */
 }
 
 DancingNode *DancingLinks::getMinColumn() {
@@ -166,7 +174,16 @@ int DancingLinks::solve(int k) {
   cover(col);
   //
   for (DancingNode *i = col->down; i != col; i = i->down) {
-    solution[k] = i;
+    /* if (k < solution.size()) */
+    /*   solution[k] = i; */
+    /* else */
+    /*   throw "fuera de rango"; */
+
+    int n = i->getN();
+    int r = i->getRow();
+    int c = i->getCol();
+    matrix[r][c] = n;
+
     for (DancingNode *j = i->right; j != i; j = j->right)
       cover(j->column);
     if (solve(k + 1))

@@ -13,7 +13,10 @@ private:
 public:
   DancingLinks();
 
-  vector<DancingNode *> solution;
+  /* vector<DancingNode *> solution; */
+
+  int **matrix;
+
   void cover(DancingNode *col);
   void uncover(DancingNode *col);
   void coverExisted(int **&m);

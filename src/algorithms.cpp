@@ -55,8 +55,8 @@ int main() {
   /*   for (int j = 0; j < 9; j++) */
   /*     m[i][j] = 0; */
   /* } */
-  /* m[0][0] = 5; */
-  /* m[8][8] = 5; */
+  /* m[0][0] = 1; */
+  /* m[8][8] = 1; */
 
   int **m2 = new int *[9];
   for (int i = 0; i < 9; ++i) {
@@ -147,25 +147,27 @@ void dlx_solve(int **&m) {
   /* cout << "covered existed" << endl; */
   DL->solve(0);
   cout << "SOLVED" << endl;
-  cout << "solution size: " << DL->solution.size() << endl;
+  /* cout << "solution size: " << DL->solution.size() << endl; */
   /* for (DancingNode *s : DL->solution) { */
-  for (int i = 0; i < DL->solution.size(); i++) {
-    DancingNode *s = DL->solution[i];
-    cout << "rowID: " << s->rowID << endl;
-    int n = s->getN();
-    cout << "got n" << endl;
-    int r = s->getRow();
-    cout << "got r" << endl;
-    int c = s->getCol();
-    cout << "got c" << endl;
-    cout << "r: " << r << ", c: " << c << endl;
-    m[r][c] = n;
-  }
+  /* for (int i = 0; i < DL->solution.size(); i++) { */
+  /*   cout << "i: " << i << endl; */
+  /*   DancingNode *s = DL->solution[i]; */
+  /*   cout << "rowID: " << s->rowID << endl; */
+  /*   int n = s->getN(); */
+  /*   cout << "got n" << endl; */
+  /*   int r = s->getRow(); */
+  /*   cout << "got r" << endl; */
+  /*   int c = s->getCol(); */
+  /*   cout << "got c" << endl; */
+  /*   cout << "r: " << r << ", c: " << c << endl; */
+  /*   m[r][c] = n; */
+  /* } */
 
   cout << "\nSOLUTION\n" << endl;
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++)
-      cout << m[i][j] << " ";
+      /* cout << m[i][j] << " "; */
+      cout << DL->matrix[i][j] << " ";
     cout << endl;
   }
 
