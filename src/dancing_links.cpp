@@ -4,12 +4,12 @@
 
 /* DancingLinks::DancingLinks(int cols) { */
 DancingLinks::DancingLinks() {
-  sentinel = new ColumnNode();
-  heads = new ColumnNode[nCols];
+  sentinel = new DancingNode();
+  heads = new DancingNode[nCols];
 
-  for (int i = 0; i < nCols; i++) {
-    heads[i] = ColumnNode(i);
-  }
+  /* for (int i = 0; i < nCols; i++) { */
+  /*   heads[i] = DancingNode(i); */
+  /* } */
 
   // cierre circular de las cabeceras con la sentinala
   sentinel->right = &heads[0];
@@ -24,14 +24,14 @@ DancingLinks::DancingLinks() {
   }
 }
 
-void DancingLinks::cover(ColumnNode *col) {
+void DancingLinks::cover(DancingNode *col) {
   col->right->left = col->left;
   col->left->right = col->right;
 
   if (col->size > 0) {
     for (DancingNode *dn = col->down; dn != col; dn = dn->down) {
       cout << "check" << endl;
-      cout << "1for rowID: " << dn->column->rowID << endl;
+      cout << "1for rowID: " << dn->rowID << endl;
       for (DancingNode *dnr = dn->right; dnr != dn; dnr = dnr->right) {
         cout << "SUBcheck" << endl;
         cout << "2for rowID: " << dnr->rowID << endl;
@@ -57,7 +57,7 @@ void DancingLinks::cover(ColumnNode *col) {
   }
 }
 
-void DancingLinks::uncover(ColumnNode *col) {
+void DancingLinks::uncover(DancingNode *col) {
   col->left->right = col;
   col->right->left = col;
 
@@ -85,10 +85,10 @@ void DancingLinks::coverExisted(int **&m) {
         cout << "n: " << n << endl;
         /* int rid = n * 81 + i * 9 + j; */
 
-        ColumnNode *nodeRow = &heads[27 * n + i];
-        ColumnNode *nodeCol = &heads[27 * n + 9 + j];
-        ColumnNode *nodeGrid = &heads[27 * n + 18 + (i / 3 * 3 + j / 3)];
-        ColumnNode *nodeCord = &heads[81 * 3 + i * 9 + j];
+        DancingNode *nodeRow = &heads[27 * n + i];
+        DancingNode *nodeCol = &heads[27 * n + 9 + j];
+        DancingNode *nodeGrid = &heads[27 * n + 18 + (i / 3 * 3 + j / 3)];
+        DancingNode *nodeCord = &heads[81 * 3 + i * 9 + j];
         cout << "declarated" << endl;
         cover(nodeRow);
         cout << "cover1" << endl;
@@ -105,11 +105,10 @@ void DancingLinks::coverExisted(int **&m) {
   solution.resize(ns);
 }
 
-ColumnNode *DancingLinks::getMinColumn() {
-  int minsz = static_cast<ColumnNode *>(sentinel->right)->size;
-  ColumnNode *temp = static_cast<ColumnNode *>(sentinel->right);
-  for (ColumnNode *i = static_cast<ColumnNode *>(sentinel->right);
-       i != sentinel; i = static_cast<ColumnNode *>(i->right)) {
+DancingNode *DancingLinks::getMinColumn() {
+  int minsz = sentinel->right->size;
+  DancingNode *temp = sentinel->right;
+  for (DancingNode *i = sentinel->right; i != sentinel; i = i->right) {
     if (i->size < minsz) {
       minsz = i->size;
       temp = i;
@@ -130,44 +129,44 @@ void DancingLinks::initDlx() {
     // fila     -> cada numero debe aparecer solo 1 vez por fila
     // 27 * n   -> Agrupa cada conjunto de 9 filas
     // + i      -> Desplazamiento segun la fila dentro del subgrid
-    ColumnNode *nodeRow = &heads[27 * n + i];
+    DancingNode *nodeRow = &heads[27 * n + i];
     //
     // columna  -> cada numero debe aparecer solo 1 vez por columna
     // 27 * n   -> Agrupa cada conjunto de 9 filas
     // + 9 + j  -> Desplazamiento segun la columna dentro del subgrid
-    ColumnNode *nodeCol = &heads[27 * n + 9 + j];
+    DancingNode *nodeCol = &heads[27 * n + 9 + j];
     //
     // subgrid  -> cada numero debe aparecer solo 1 vez por subgrid
     // 27 * n   -> Agrupa cada conjunto de 9 filas
     // + 18 + (i / 3 * 3 + j / 3)  -> Desplazamiento segun el subgrid actual
-    ColumnNode *nodeGrid = &heads[27 * n + 18 + (i / 3 * 3 + j / 3)];
+    DancingNode *nodeGrid = &heads[27 * n + 18 + (i / 3 * 3 + j / 3)];
     //
     // coordenada  -> cada numero debe aparecer solo 1 vez por combinacion unica
     // 81 * 3      -> Agrupa cada combinacion unica
     // + i * 9 + j -> Desplazamiento segun la fila y columna
-    ColumnNode *nodeCord = &heads[81 * 3 + i * 9 + j];
+    DancingNode *nodeCord = &heads[81 * 3 + i * 9 + j];
 
     // nuevo nodo para la fila actual
     DancingNode *nodeR =
-        new DancingNode(nullptr, nullptr, nodeRow->up, nodeRow, nodeRow, r);
+        new DancingNode(nullptr, nullptr, nodeRow->up, nodeRow, nodeRow, 0, r);
     nodeRow->up->down = nodeR;
     nodeRow->up = nodeR;
     //
     // nuevo nodo para la columna actual
     DancingNode *nodeC =
-        new DancingNode(nodeR, nullptr, nodeCol->up, nodeCol, nodeCol, r);
+        new DancingNode(nodeR, nullptr, nodeCol->up, nodeCol, nodeCol, 0, r);
     nodeCol->up->down = nodeC;
     nodeCol->up = nodeC;
     //
     // nuevo nodo para la subGrid actual
     DancingNode *nodeG =
-        new DancingNode(nodeC, nullptr, nodeGrid->up, nodeGrid, nodeGrid, r);
+        new DancingNode(nodeC, nullptr, nodeGrid->up, nodeGrid, nodeGrid, 0, r);
     nodeGrid->up->down = nodeG;
     nodeGrid->up = nodeG;
     //
     // nuevo nodo para la coordenada actual
     DancingNode *nodeCd =
-        new DancingNode(nodeG, nodeR, nodeCord->up, nodeCord, nodeCord, r);
+        new DancingNode(nodeG, nodeR, nodeCord->up, nodeCord, nodeCord, 0, r);
     nodeCord->up->down = nodeCd;
     nodeCord->up = nodeCd;
     //
@@ -188,7 +187,7 @@ void DancingLinks::initDlx() {
 int DancingLinks::solve(int k) {
   if (sentinel->right == sentinel)
     return 1;
-  ColumnNode *col = getMinColumn();
+  DancingNode *col = getMinColumn();
   if (col->size == 0)
     return 0;
   cover(col);

@@ -7,8 +7,8 @@ using namespace std;
 
 class DancingLinks {
 private:
-  ColumnNode *sentinel;
-  ColumnNode *heads;
+  DancingNode *sentinel;
+  DancingNode *heads;
   /* int n_cols; */
 
 public:
@@ -16,10 +16,10 @@ public:
   /* DancingLinks(int cols); */
 
   vector<DancingNode *> solution;
-  void cover(ColumnNode *col);
-  void uncover(ColumnNode *col);
+  void cover(DancingNode *col);
+  void uncover(DancingNode *col);
   void coverExisted(int **&m);
-  ColumnNode *getMinColumn();
+  DancingNode *getMinColumn();
   void initDlx();
   int solve(int k);
 };
