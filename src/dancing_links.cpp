@@ -30,25 +30,7 @@ void DancingLinks::cover(DancingNode *col) {
 
   if (col->size > 0) {
     for (DancingNode *dn = col->down; dn != col; dn = dn->down) {
-      cout << "check" << endl;
-      cout << "1for rowID: " << dn->rowID << endl;
       for (DancingNode *dnr = dn->right; dnr != dn; dnr = dnr->right) {
-        cout << "SUBcheck" << endl;
-        cout << "2for rowID: " << dnr->rowID << endl;
-
-        if (dnr->down != nullptr) {
-          cout << "down exists" << endl;
-
-          // TODO (FIX)
-          if (dnr->down->up != nullptr) {
-            cout << "up exists" << endl;
-          } else {
-            cout << "up is nullptr" << endl;
-          }
-        } else {
-          cout << "down is nullptr" << endl;
-        }
-
         dnr->down->up = dnr->up;
         dnr->up->down = dnr->down;
         dnr->column->size--;
@@ -77,27 +59,18 @@ void DancingLinks::uncover(DancingNode *col) {
 void DancingLinks::coverExisted(int **&m) {
   int ns = 81;
   for (int i = 0; i < 9; i++) {
-    cout << "i: " << i << endl;
     for (int j = 0; j < 9; j++) {
-      cout << "j: " << j << endl;
       if (m[i][j] != 0) {
         int n = m[i][j] - 1;
-        cout << "n: " << n << endl;
-        /* int rid = n * 81 + i * 9 + j; */
 
         DancingNode *nodeRow = &heads[27 * n + i];
         DancingNode *nodeCol = &heads[27 * n + 9 + j];
         DancingNode *nodeGrid = &heads[27 * n + 18 + (i / 3 * 3 + j / 3)];
         DancingNode *nodeCord = &heads[81 * 3 + i * 9 + j];
-        cout << "declarated" << endl;
         cover(nodeRow);
-        cout << "cover1" << endl;
         cover(nodeCol);
-        cout << "cover2" << endl;
         cover(nodeGrid);
-        cout << "cover3" << endl;
         cover(nodeCord);
-        cout << "cover4" << endl;
         --ns;
       }
     }

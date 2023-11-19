@@ -13,6 +13,8 @@ int main() {
   m[0][1] = 3;
   m[0][4] = 7;
 
+  /* m[1][1] = 5; */
+
   m[1][0] = 6;
   m[1][3] = 1;
   m[1][4] = 9;
@@ -47,47 +49,116 @@ int main() {
   m[8][4] = 8;
   m[8][7] = 7;
   m[8][8] = 9;
+
+  // test
+  /* for (int i = 0; i < 9; i++) { */
+  /*   for (int j = 0; j < 9; j++) */
+  /*     m[i][j] = 0; */
+  /* } */
+  /* m[0][0] = 5; */
+  /* m[8][8] = 5; */
+
+  int **m2 = new int *[9];
+  for (int i = 0; i < 9; ++i) {
+    m2[i] = new int[9];
+    for (int j = 0; j < 9; ++j) {
+      m2[i][j] = m[i][j];
+    }
+  }
+
   cout << "initial matrix: " << endl;
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++)
       cout << m[i][j] << " ";
     cout << endl;
   }
+
   dlx_solve(m);
+  cout << "---------" << endl;
+  brute_force_solve(m2);
+}
+
+// Backtracking / Solucion ingenua
+bool isValid(int **&m, int row, int col, int k) {
+  for (int i = 0; i < 9; i++) {
+    if (m[i][col] == k)
+      return false;
+    if (m[row][i] == k)
+      return false;
+    if (m[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == k)
+      return false;
+  }
+  return true;
+}
+
+bool solveIngenuo(int **&board) {
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++) {
+      if (board[i][j] == 0) {
+        for (int k = 1; k <= 9; k++) {
+          if (isValid(board, i, j, k)) {
+            board[i][j] = k;
+            if (solveIngenuo(board) == true) {
+              return true;
+            }
+            board[i][j] = 0;
+          }
+        }
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 // brute force sudoku solver
-vector<int **> brute_force_solve(int **&m) {
-  vector<int **> solutions;
+void brute_force_solve(int **&m) {
   auto start = chrono::high_resolution_clock::now();
 
   // todo!()
+  solveIngenuo(m);
+  cout << "\nSOLUTION\n" << endl;
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++)
+      cout << m[i][j] << " ";
+    cout << endl;
+  }
 
   auto end = chrono::high_resolution_clock::now();
   auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
   cout << "brute force: " << duration.count() << " microseconds" << endl;
-
-  return solutions;
 }
 
 // dancing links sudoku solver
-/* vector<vector<int>> dlx_solve(vector<vector<int>> &m) { */
+// las funciones son metodos de la clase "DancingLinks"
 void dlx_solve(int **&m) {
-  /* vector<int **> solutions; */
   DancingLinks *DL = new DancingLinks();
-  auto start = chrono::high_resolution_clock::now();
-  cout << "start" << endl;
-
-  // todo!()
   DL->initDlx();
   cout << "init done" << endl;
   DL->coverExisted(m);
   cout << "covered existed" << endl;
+  auto start = chrono::high_resolution_clock::now();
+  cout << "start" << endl;
+
+  // todo!()
+  /* DL->initDlx(); */
+  /* cout << "init done" << endl; */
+  /* DL->coverExisted(m); */
+  /* cout << "covered existed" << endl; */
   DL->solve(0);
-  for (DancingNode *s : DL->solution) {
+  cout << "SOLVED" << endl;
+  cout << "solution size: " << DL->solution.size() << endl;
+  /* for (DancingNode *s : DL->solution) { */
+  for (int i = 0; i < DL->solution.size(); i++) {
+    DancingNode *s = DL->solution[i];
+    cout << "rowID: " << s->rowID << endl;
     int n = s->getN();
+    cout << "got n" << endl;
     int r = s->getRow();
+    cout << "got r" << endl;
     int c = s->getCol();
+    cout << "got c" << endl;
+    cout << "r: " << r << ", c: " << c << endl;
     m[r][c] = n;
   }
 
@@ -101,8 +172,6 @@ void dlx_solve(int **&m) {
   auto end = chrono::high_resolution_clock::now();
   auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
   cout << "dancing links: " << duration.count() << " microseconds" << endl;
-
-  /* return solutions; */
 }
 
 bool compare_result(vector<int **> &a, vector<int **> &b) {

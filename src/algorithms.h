@@ -7,7 +7,7 @@
 using namespace std;
 
 // brute force sudoku solver
-vector<int **> brute_force_solve(int **&m);
+void brute_force_solve(int **&m);
 
 // dancing links sudoku solver
 /* vector<int**> dlx_solve(int**& m); */

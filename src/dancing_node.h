@@ -13,7 +13,11 @@ struct DancingNode {
   int rowID;
   int size;
 
-  DancingNode() { left = right = up = down = this; }
+  DancingNode() {
+    left = right = up = down = column = this;
+    rowID = -1;
+    size = 0;
+  }
   DancingNode(DancingNode *l, DancingNode *r, DancingNode *u, DancingNode *d,
               DancingNode *c, int sz, int rid)
       : left(l), right(r), up(u), down(d), column(c), size(sz), rowID(rid) {}

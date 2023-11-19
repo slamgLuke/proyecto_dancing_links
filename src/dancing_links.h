@@ -9,11 +9,9 @@ class DancingLinks {
 private:
   DancingNode *sentinel;
   DancingNode *heads;
-  /* int n_cols; */
 
 public:
   DancingLinks();
-  /* DancingLinks(int cols); */
 
   vector<DancingNode *> solution;
   void cover(DancingNode *col);
