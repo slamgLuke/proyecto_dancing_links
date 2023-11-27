@@ -5,6 +5,8 @@
 
 using namespace std;
 
+static bool write = false;
+
 Vec2d getMouseCoords(sf::RenderWindow& window) {
     auto mousePos = sf::Mouse::getPosition(window);
     auto translatedPos = window.mapPixelToCoords(mousePos);
@@ -17,11 +19,19 @@ void solve(bool* is_solving) {
     int** matrix = sudoku.export_matrix();
     sudoku.start_timer();
     if (sudoku.get_algorithm() == 1) {
-        auto dlx = dlx_solve(matrix);
+        dlx_solve(matrix);
     } else {
-        auto brute = brute_force_solve(matrix);
+        brute_force_solve(matrix);
     }
     sudoku.stop_timer();
+
+    if (write) {
+        for (int x = 0; x < SUDOKU_SIZE; x++) {
+            for (int y = 0; y < SUDOKU_SIZE; y++) {
+                sudoku.setTile(x, y, matrix[x][y]);
+            }
+        }
+    }
 
     for (int i = 0; i < SUDOKU_SIZE; i++) {
         delete[] matrix[i];
@@ -95,6 +105,10 @@ int main() {
                     }
                     if (event.key.code == sf::Keyboard::B) {
                         sudoku.change_algorithm(2);
+                    }
+
+                    if (event.key.code == sf::Keyboard::W) {
+                        write = !write;
                     }
                 }
             }
